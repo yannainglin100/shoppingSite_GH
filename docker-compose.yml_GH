@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # 1. Database Service
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: shoppingsite_db_gh
+    environment:
+      POSTGRES_USER: shopping_user
+      POSTGRES_PASSWORD: shopping_password
+      POSTGRES_DB: shoppingsite_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_gh:/var/lib/postgresql/data
+
+  # 2. Authentication Service (2FA)
+  auth-service:
+    build:
+      context: .
+      target: auth-service
+    image: yannainglin100/shoppingsite-auth_gh:latest
+    container_name: shoppingsite_auth_gh
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=shopping_user
+      - DB_PASSWORD=shopping_password
+      - DB_NAME=shoppingsite_db
+    depends_on:
+      - postgres-db
+
+  # 3. Catalog Service
+  catalog-service:
+    build:
+      context: .
+      target: catalog-service
+    image: yannainglin100/shoppingsite-catalog_gh:latest
+    container_name: shoppingsite_catalog_gh
+    ports:
+      - "5002:5002"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=shopping_user
+      - DB_PASSWORD=shopping_password
+      - DB_NAME=shoppingsite_db
+    depends_on:
+      - postgres-db
+
+  # 4. Order Service
+  order-service:
+    build:
+      context: .
+      target: order-service
+    image: yannainglin100/shoppingsite-order_gh:latest
+    container_name: shoppingsite_order_gh
+    ports:
+      - "5003:5003"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=shopping_user
+      - DB_PASSWORD=shopping_password
+      - DB_NAME=shoppingsite_db
+    depends_on:
+      - postgres-db
+
+  # 5. Frontend Client UI
+  frontend-client:
+    build:
+      context: .
+      target: frontend-client
+    image: yannainglin100/shoppingsite-frontend_gh:latest
+    container_name: shoppingsite_frontend_gh
+    ports:
+      - "80:80"
+    depends_on:
+      - catalog-service
+      - order-service
+      - auth-service
+
+volumes:
+  pgdata_gh:

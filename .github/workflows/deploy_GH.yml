@@ -1,0 +1,49 @@
+name: ShoppingSite GH CI-CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN_GH }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_GH }}" --password-stdin
+
+      # 1. Build and Push Auth Service (2FA)
+      - name: Build & Push Auth Service
+        run: |
+          docker build --target auth-service -t ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-auth_gh:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-auth_gh:latest
+
+      # 2. Build and Push Catalog Service
+      - name: Build & Push Catalog Service
+        run: |
+          docker build --target catalog-service -t ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-catalog_gh:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-catalog_gh:latest
+
+      # 3. Build and Push Order Service
+      - name: Build & Push Order Service
+        run: |
+          docker build --target order-service -t ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-order_gh:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-order_gh:latest
+
+      # 4. Build and Push Frontend Client UI
+      - name: Build & Push Frontend Client
+        run: |
+          docker build --target frontend-client -t ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-frontend_gh:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME_GH }}/shoppingsite-frontend_gh:latest
+
+      # 5. Trigger Render Updates
+      - name: Deploy to Render Live Environment
+        run: |
+          curl -X POST "${{ secrets.RENDER_AUTH_HOOK_GH }}"
+          curl -X POST "${{ secrets.RENDER_CATALOG_HOOK_GH }}"
+          curl -X POST "${{ secrets.RENDER_ORDER_HOOK_GH }}"
+          curl -X POST "${{ secrets.RENDER_FRONTEND_HOOK_GH }}"

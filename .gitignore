@@ -1,0 +1,35 @@
+# Dependency directories (Never push node_modules to GitHub)
+node_modules/
+jspm_packages/
+web_stage/
+
+# Local Build outputs
+dist/
+build/
+out/
+.next/
+
+# Environment variables & Private Keys (CRITICAL for security)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# GitHub Actions Runner specific exclusions
+# (Prevents your local machine settings from messing up GitHub)
+actions-runner/
+_diag/
+_work/
+.runner
+.credentials
+.credentials_rsaparams
+
+# OS Metadata files
+.DS_Store
+Thumbs.db
+
+# Docker local data directories
+.docker/
