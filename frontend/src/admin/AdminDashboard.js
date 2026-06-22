@@ -38,7 +38,7 @@ export default function AdminDashboard({ orders, orderUrl, refresh }) {
       
       {/* BUSINESS METRICS SUMMARY MATRIX GRID */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-        <div style={metricCardStyle('#f0fdf4', '#16a34a', '#bbf7d0')}>
+        <div style={metricCardStyle('#f0fdf5', '#16a34a', '#bbf7d0')}>
           <h4>Gross Realized Revenue</h4>
           <p>${totalRevenue.toFixed(2)}</p>
           <span>From approved transactions</span>
