@@ -44,7 +44,7 @@ COPY frontend/ .
 RUN npm run build
 
 FROM nginx:alpine AS frontend-client
-COPY --from=frontend-build /app/dist /usr/share/nginx/html
-# COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+# 🔄 Changed from /app/dist to /app/build to match Create React App specs:
+COPY --from=frontend-build /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
