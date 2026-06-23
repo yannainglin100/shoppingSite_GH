@@ -34,7 +34,7 @@ export default function AdminDashboard({ orders, orderUrl, refresh }) {
 
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
-      <h2 style={{ color: '#0369a1', marginBottom: '25px', fontWeight: '701' }}>Executive Business Summary Dashboard</h2>
+      <h2 style={{ color: '#ed292f', marginBottom: '25px', fontWeight: '701' }}>Executive Business Summary Dashboard</h2>
       
       {/* BUSINESS METRICS SUMMARY MATRIX GRID */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
